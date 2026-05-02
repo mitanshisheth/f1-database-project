@@ -1,4 +1,4 @@
-#Loads Formula 1 dataset from CSV files into MySQL database
+#Loads Formula 1 dataset from CSV files into MySQL database along with cleaning 
 # Import necessary libraries
 import pandas as pd
 from sqlalchemy import create_engine
@@ -12,6 +12,11 @@ def clean_df(df):
 # Drivers
 df = pd.read_csv("path/to/drivers.csv")
 df = clean_df(df)
+df['name'] = df['forename'].fillna('') + ' ' + df['surname'].fillna('')
+df['dob'] = pd.to_datetime(df['dob'], errors='coerce', dayfirst=True)
+today = pd.Timestamp.today()
+df['age'] = df['dob'].apply(lambda x: today.year - x.year if pd.notna(x) else None)
+df['driverId'] = pd.to_numeric(df_clean['driverId'], errors='coerce')
 df.to_sql('drivers_staging', con=engine, if_exists='append', index=False)
 
 # Constructors
@@ -95,5 +100,21 @@ for col in numeric_cols:
     df8[col] = pd.to_numeric(df8[col], errors='coerce')
 
 df8.to_sql('qualifying', con=engine, if_exists='append', index=False, method='multi')
+#Status
+df9 = pd.read_csv("path/to/status.csv")
+df9 = clean_df(df9)
 
 print("All tables loaded successfully!")
+#save for opening in jupyter notebook for eda
+def cleanedtocsv(df,path):
+    df.to_csv(path, index=False)
+cleanedtocsv(df, "path/to/drivers_cleaned.csv")
+cleanedtocsv(df2, "path/to/constructors_cleaned.csv")
+cleanedtocsv(df3, "path/to/circuits_cleaned.csv")
+cleanedtocsv(df4, "path/to/races_cleaned.csv")
+cleanedtocsv(df5, "path/to/results_cleaned.csv")
+cleanedtocsv(df6, "path/to/lap_times_cleaned.csv")
+cleanedtocsv(df7, "path/to/pit_stops_cleaned.csv")
+cleanedtocsv(df8, "path/to/qualifying_cleaned.csv")
+cleanedtocsv(df9, "path/to/status_cleaned.csv")
+print("cleaned succesfully")
