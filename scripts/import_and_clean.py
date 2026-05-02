@@ -105,6 +105,7 @@ df9 = pd.read_csv("path/to/status.csv")
 df9 = clean_df(df9)
 
 print("All tables loaded successfully!")
+
 #save for opening in jupyter notebook for eda
 def cleanedtocsv(df,path):
     df.to_csv(path, index=False)
