@@ -16,7 +16,7 @@ df['name'] = df['forename'].fillna('') + ' ' + df['surname'].fillna('')
 df['dob'] = pd.to_datetime(df['dob'], errors='coerce', dayfirst=True)
 today = pd.Timestamp.today()
 df['age'] = df['dob'].apply(lambda x: today.year - x.year if pd.notna(x) else None)
-df['driverId'] = pd.to_numeric(df_clean['driverId'], errors='coerce')
+df['driverId'] = pd.to_numeric(df['driverId'], errors='coerce')
 df.to_sql('drivers_staging', con=engine, if_exists='append', index=False)
 
 # Constructors
